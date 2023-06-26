@@ -1,0 +1,19 @@
+{
+  "type": "module",
+  "name": "typescript",
+  "version": "1.0.0",
+  "description": "Advent of Code '22",
+  "main": "src/index.ts",
+  "repository": "https://github.com/NoamBechhofer/AdventOfCode22.git",
+  "author": "Noam Bechhofer",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@algorithm.ts/priority-queue": "^2.0.14",
+    "@types/node": "^20.3.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.1.3"
+  },
+  "scripts": {
+    "start": "ts-node src/index.ts"
+  }
+}
