@@ -2,9 +2,7 @@ package javaa.day.one;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Optional;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
