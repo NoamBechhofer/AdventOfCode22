@@ -4,7 +4,7 @@ import { createPriorityQueue } from '@algorithm.ts/priority-queue';
 import { assert } from 'node:console';
 
 if (process.argv.length != 3) {
-    console.error("usage: ts-node " + __filename + " <input file>");
+    console.error("usage: ts-node-esm " + __filename + " <input file>");
     exit(1);
 }
 
