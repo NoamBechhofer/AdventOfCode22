@@ -9,19 +9,6 @@ public enum Shape {
         this.value = value;
     }
 
-    public static Shape getResponse(Shape originalShape, Outcome desiredOutcome) {
-        switch (desiredOutcome) {
-            case WIN:
-                return originalShape.defeatedBy();
-            case LOSS:
-                return originalShape.defeats();
-            case DRAW:
-                return originalShape;
-            default:
-                throw new IllegalStateException();
-        }
-    }
-
     public Shape defeatedBy() {
         switch (this) {
             case ROCK:

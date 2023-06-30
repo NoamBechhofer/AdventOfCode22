@@ -57,12 +57,25 @@ public class Rochambeau {
                 case 'Z' -> Outcome.WIN;
                 default -> throw new IllegalStateException();
             };
-            Shape me = Shape.getResponse(opponent, desiredOutcome);
+            Shape me = Rochambeau.getResponse(opponent, desiredOutcome);
 
             score += scoreMatch(me, desiredOutcome);
         }
         System.out.println("Your actual score is " + score);
         sc.close();
+    }
+
+    public static Shape getResponse(Shape originalShape, Outcome desiredOutcome) {
+        switch (desiredOutcome) {
+            case WIN:
+                return originalShape.defeatedBy();
+            case LOSS:
+                return originalShape.defeats();
+            case DRAW:
+                return originalShape;
+            default:
+                throw new IllegalStateException();
+        }
     }
 
 }
