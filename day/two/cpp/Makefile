@@ -8,7 +8,8 @@ TARGET = Rochambeau
 SRCS = Rochambeau.cpp Rochambeau.hpp
 
 # object files
-OBJS = $(SRCS:.cpp=.o)
+OBJS := $(SRCS:.cpp=.o)
+OBJS := $(OBJS:%.hpp=) # strip away any header files from the object list
 
 # default target
 all: $(TARGET)
@@ -27,4 +28,4 @@ $(TARGET): $(OBJS)
 
 # clean rule
 clean:
-	rm -f *.o $(TARGET)
+	rm -f $(OBJS) $(TARGET)
