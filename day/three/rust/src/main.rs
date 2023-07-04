@@ -25,7 +25,7 @@ impl From<&str> for Rucksack<char> {
         let frac_len = s_prime_len / rucksack.contents.len();
         for compartment in rucksack.contents.iter_mut() {
             for _ in 0..frac_len {
-                compartment.items.push(s_prime.chars().nth(0).unwrap());
+                compartment.push(s_prime.chars().nth(0).unwrap());
                 if s_prime.len() > 1 {
                     s_prime = &s_prime[1..];
                 }
@@ -35,21 +35,7 @@ impl From<&str> for Rucksack<char> {
     }
 }
 
-struct Compartment<T> {
-    items: Vec<T>,
-}
-
-impl<T> Default for Compartment<T> {
-    fn default() -> Self {
-        Compartment::new()
-    }
-}
-
-impl<T> Compartment<T> {
-    fn new() -> Self {
-        Compartment { items: vec![] }
-    }
-}
+type Compartment<T> = Vec<T>;
 
 type Priority = u8;
 impl From<&Rucksack<char>> for Option<Priority> {
@@ -87,12 +73,12 @@ fn priority_from_char(c: char) -> Option<Priority> {
 fn find_some_shared_item(rucksack: &Rucksack<char>) -> Option<char> {
     let mut map: HashSet<char> = HashSet::new();
     for compartment in rucksack.contents.iter() {
-        for item in compartment.items.iter() {
+        for item in compartment.iter() {
             if map.contains(item) {
                 return Some(*item);
             }
         }
-        map.extend(compartment.items.iter());
+        map.extend(compartment.iter());
     }
     return None;
 }
