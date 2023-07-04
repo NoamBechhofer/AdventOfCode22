@@ -1,4 +1,4 @@
-use std::{collections::HashSet, env, fmt::Display, iter::Sum};
+use std::{collections::HashSet, env, iter::Sum};
 
 const NUM_COMPARTMENTS: usize = 2;
 
@@ -6,27 +6,7 @@ struct Rucksack<T> {
     contents: [Compartment<T>; NUM_COMPARTMENTS],
 }
 
-impl<T: Display> Display for Rucksack<T> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let mut ret = String::from("");
-        for compartment in self.contents.iter() {
-            ret += "[";
-            for item in compartment.items.iter() {
-                ret += &format!("{}, ", item);
-            }
-            ret += "]\n";
-        }
-        write!(f, "{}", ret)
-    }
-}
-
-impl<T> Default for Rucksack<T> {
-    fn default() -> Self {
-        Rucksack::new()
-    }
-}
-
-impl<T> Rucksack<T> {
+impl Rucksack<char> {
     fn new() -> Self {
         Rucksack {
             contents: [Compartment::new(), Compartment::new()],
