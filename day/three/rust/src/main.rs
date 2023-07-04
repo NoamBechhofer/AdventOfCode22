@@ -2,6 +2,9 @@ use std::{collections::HashSet, env, iter::Sum};
 
 const NUM_COMPARTMENTS: usize = 2;
 
+type Compartment<T> = Vec<T>;
+type Priority = u8;
+
 struct Rucksack<T> {
     contents: [Compartment<T>; NUM_COMPARTMENTS],
 }
@@ -35,9 +38,6 @@ impl From<&str> for Rucksack<char> {
     }
 }
 
-type Compartment<T> = Vec<T>;
-
-type Priority = u8;
 impl From<&Rucksack<char>> for Option<Priority> {
     fn from(value: &Rucksack<char>) -> Self {
         if let Some(shared_item) = find_some_shared_item(&value) {
@@ -95,11 +95,6 @@ fn main() {
     let mut rucksacks: Vec<Rucksack<char>> = vec![];
     for line in contents.lines() {
         let curr = Rucksack::from(line);
-        // println!(
-        //     "Rucksack:\n{}Duplicate: {}",
-        //     curr,
-        //     find_some_shared_item(&curr).unwrap()
-        // );
         rucksacks.push(curr);
     }
 
