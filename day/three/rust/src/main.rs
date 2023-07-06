@@ -1,4 +1,4 @@
-use std::{collections::HashSet, env, iter::Sum};
+use std::{collections::{HashSet, HashMap}, env, iter::Sum, slice::Iter};
 
 const NUM_COMPARTMENTS: usize = 2;
 
@@ -14,6 +14,12 @@ impl Rucksack<char> {
         Rucksack {
             contents: [Compartment::new(), Compartment::new()],
         }
+    }
+}
+
+impl<T> Rucksack<T> {
+    fn iter(&self) -> Iter<Compartment<T>> {
+        return self.contents.iter();
     }
 }
 
@@ -70,18 +76,44 @@ fn priority_from_char(c: char) -> Option<Priority> {
     }
 }
 
-fn find_some_shared_item(rucksack: &Rucksack<char>) -> Option<char> {
-    let mut map: HashSet<char> = HashSet::new();
-    for compartment in rucksack.contents.iter() {
-        for item in compartment.iter() {
-            if map.contains(item) {
-                return Some(*item);
+fn find_some_shared_item_among_many(rucksacks: &Vec<Rucksack<char>>) -> Option<char> {
+    let mut map: HashMap<char, usize> = HashMap::new();
+    for rucksack in rucksacks.iter() {
+        let mut set: HashSet<char> = HashSet::new();
+        for item in rucksack.iter().flat_map(|compartment| compartment.iter()) {
+            if (set.contains(item)) {
+                continue;
+            } else {
+                set.insert(*item);
+                if !map.contains_key(item) {
+                    map.insert(*item, 1);
+                } else  {
+                    map.insert(*item, map.get(item)? + 1);
+                }
             }
         }
-        map.extend(compartment.iter());
+    }
+    for c in map.keys() {
+        if *map.get(c)? == rucksacks.len() {
+            return Some(*c);
+        }
     }
     return None;
 }
+fn find_some_shared_item(rucksack: &Rucksack<char>) -> Option<char> {
+    let mut set: HashSet<char> = HashSet::new();
+    for compartment in rucksack.iter() {
+        for item in compartment.iter() {
+            if set.contains(item) {
+                return Some(*item);
+            }
+        }
+        set.extend(compartment.iter());
+    }
+    return None;
+}
+
+type Item = char;
 
 fn main() {
     let argv: Vec<String> = env::args().collect();
@@ -90,9 +122,9 @@ fn main() {
     }
 
     let filepath = &argv[1];
-    let contents = std::fs::read_to_string(filepath).expect("Failed to read file");
+    let mut contents = std::fs::read_to_string(filepath).expect("Failed to read file");
 
-    let mut rucksacks: Vec<Rucksack<char>> = vec![];
+    let mut rucksacks: Vec<Rucksack<Item>> = vec![];
     for line in contents.lines() {
         let curr = Rucksack::from(line);
         rucksacks.push(curr);
@@ -100,4 +132,6 @@ fn main() {
 
     let total_priority: u32 = rucksacks.iter().sum();
     println!("Total priority: {}", total_priority);
+
+    contents = std::fs::read_to_string(filepath).expect("Failed to read file");
 }
