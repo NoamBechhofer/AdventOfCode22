@@ -1,6 +1,7 @@
 use std::{
     collections::{HashMap, HashSet},
     env,
+    hash::Hash,
     iter::Sum,
     slice::Iter,
 };
@@ -9,8 +10,17 @@ const NUM_COMPARTMENTS: usize = 2;
 const GROUP_SIZE: usize = 3;
 
 type Compartment<T> = Vec<T>;
-type Priority = u8;
 type Item = char;
+
+struct Priority {
+    value: u32,
+}
+
+impl From<Priority> for u32 {
+    fn from(value: Priority) -> Self {
+        value.value as u32
+    }
+}
 
 #[derive(Clone)]
 struct Rucksack<T> {
@@ -25,9 +35,22 @@ impl Rucksack<char> {
     }
 }
 
-impl<T> Rucksack<T> {
+impl<T: Hash + Eq> Rucksack<T> {
     fn iter(&self) -> Iter<Compartment<T>> {
         return self.contents.iter();
+    }
+
+    fn get_duplicate_item(&self) -> Option<T> {
+        let mut set: HashSet<T> = HashSet::new();
+        for compartment in (*self).iter() {
+            for item in compartment.iter() {
+                if set.contains(item) {
+                    return Some(*item);
+                }
+            }
+            set.extend(compartment.iter());
+        }
+        return None;
     }
 }
 
@@ -55,7 +78,7 @@ impl From<&str> for Rucksack<Item> {
 impl From<&Rucksack<Item>> for Option<Priority> {
     fn from(value: &Rucksack<Item>) -> Self {
         if let Some(shared_item) = find_some_shared_item(&value) {
-            return priority_from_char(shared_item);
+            return Some(Priority::from(shared_item));
         } else {
             return None;
         }
@@ -71,20 +94,26 @@ impl<'a> Sum<&'a Rucksack<Item>> for u32 {
 impl Sum<Rucksack<Item>> for u32 {
     fn sum<I: Iterator<Item = Rucksack<Item>>>(iter: I) -> Self {
         iter.map(|r| match Option::<Priority>::from(&r) {
-            Some(priority) => priority as u32,
+            Some(priority) => u32::from(priority),
             None => 0,
         })
         .sum()
     }
 }
 
-fn priority_from_char(c: char) -> Option<Priority> {
-    if c < 'A' || (c > 'Z' && c < 'a') || c > 'z' {
-        None
-    } else if c >= 'a' {
-        Some(c as u8 - b'a' + 1)
-    } else {
-        Some(c as u8 - b'A' + 1 + 26)
+impl From<char> for Priority {
+    fn from(c: char) -> Self {
+        if c < 'A' || (c > 'Z' && c < 'a') || c > 'z' {
+            panic!("cannot convert char {}", c);
+        } else if c >= 'a' {
+            Priority {
+                value: (c as u8 - b'a' + 1) as u32,
+            }
+        } else {
+            Priority {
+                value: (c as u8 - b'A' + 1 + 26) as u32,
+            }
+        }
     }
 }
 
@@ -117,6 +146,7 @@ fn find_some_shared_item_among_many(rucksacks: &Vec<Rucksack<char>>) -> Option<I
     }
     return None;
 }
+
 fn find_some_shared_item(rucksack: &Rucksack<char>) -> Option<char> {
     let mut set: HashSet<char> = HashSet::new();
     for compartment in rucksack.iter() {
@@ -145,7 +175,7 @@ fn main() {
     let mut total: u32 = 0;
 
     for chunk in contents.lines().collect::<Vec<&str>>().chunks(GROUP_SIZE) {
-        total += priority_from_char(
+        total += u32::from(Priority::from(
             find_badge(
                 chunk
                     .iter()
@@ -153,8 +183,7 @@ fn main() {
                     .collect::<Vec<Rucksack<Item>>>(),
             )
             .unwrap(),
-        )
-        .unwrap() as u32;
+        ));
     }
 
     println!("Sum of badges: {}", total);
