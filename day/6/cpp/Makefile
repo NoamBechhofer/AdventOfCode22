@@ -32,7 +32,7 @@ clean:
 
 
 test:
-	make clean && make && ./TuningTrouble ../input.txt > out.txt 2>&1
+	make clean && make && ./TuningTrouble ../input.txt
 
 valtest:
-	make clean && make && valgrind ./TuningTrouble ../input.txt > out.txt 2>&1
+	make clean && make && valgrind ./TuningTrouble ../input.txt
