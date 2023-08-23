@@ -18,9 +18,15 @@ constexpr int NUM_PILES = 9;
 
 using namespace std;
 
+/**
+ * @brief Print the stacks to the given output stream.
+ *
+ * @param output The output stream to print to.
+ * @param stacks The stacks to print.
+ */
 void debug_print_stacks(ostream& output, deque<supplies::crate> stacks[NUM_PILES])
 {
-    output << supply_stacks_utils::repeat('~', 40) << "\n";
+    output << supplies_utils::repeat('~', 40) << "\n";
 
     size_t max_items = 0;
     for (int i = 0; i < NUM_PILES; i++) {
@@ -50,7 +56,7 @@ void debug_print_stacks(ostream& output, deque<supplies::crate> stacks[NUM_PILES
                 backup[j].push_back(top);
                 stacks[j].pop_back();
             } else {
-                output << supply_stacks_utils::repeat(' ', 4);
+                output << supplies_utils::repeat(' ', 4);
             }
         }
         output << "\n";
@@ -72,7 +78,7 @@ void debug_print_stacks(ostream& output, deque<supplies::crate> stacks[NUM_PILES
     }
 
     output << "\n"
-           << supply_stacks_utils::repeat('~', 40) << "\n";
+           << supplies_utils::repeat('~', 40) << "\n";
 }
 
 /**
@@ -82,7 +88,7 @@ void debug_print_stacks(ostream& output, deque<supplies::crate> stacks[NUM_PILES
  * @return tuple<int, int, int> A tuple containing the number of crates to move,
  * the stack to move from, and the stack to move to.
  */
-tuple<int, int, int> parse_move_command(string line)
+tuple<int, int, int> parse_move_instruction(string line)
 {
     string num_crates_str = line.substr(line.find("move  ") + strlen("move ") + 1);
     num_crates_str = num_crates_str.substr(0, num_crates_str.find(' '));
@@ -122,7 +128,7 @@ void crate_mover_9000_execute(deque<supplies::crate> stacks[NUM_PILES], string l
     int num_crates;
     int from_stack;
     int to_stack;
-    tie(num_crates, from_stack, to_stack) = parse_move_command(line);
+    tie(num_crates, from_stack, to_stack) = parse_move_instruction(line);
 
     // cerr << "moving " << num_crates << " crates from stack " << from_stack << " to stack " << to_stack << "\n";
     for (int i = 0; i < num_crates; i++) {
@@ -143,7 +149,7 @@ void crate_mover_9001_execute(deque<supplies::crate> stacks[NUM_PILES], string l
     int num_crates;
     int from_stack;
     int to_stack;
-    tie(num_crates, from_stack, to_stack) = parse_move_command(line);
+    tie(num_crates, from_stack, to_stack) = parse_move_instruction(line);
 
     // cerr << "moving " << num_crates << " crates from stack " << from_stack << " to stack " << to_stack << "\n";
     stack<supplies::crate> batch;

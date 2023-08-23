@@ -5,25 +5,16 @@
 #include <regex>
 #include <string>
 
-namespace supply_stacks_utils {
+namespace supplies_utils {
 using namespace std;
 
 string left_trimmed(string s)
 {
-    // try {
     size_t first = s.find_first_not_of(" ");
     if (first == string::npos) {
         return "";
     }
     return s.substr(s.find_first_not_of(" "));
-    // } catch (const out_of_range& e) {
-    //     cerr << e.what() << "\n"
-    //         << "in string: " << s << "\n"
-    //         << "at index: " << s.find_first_not_of(" ") << "\n"
-    //         << "length: " << s.length() << "\n"
-    //         << "from function find_first_not_of\n";
-    //     exit(1);
-    // }
 }
 
 string right_trimmed(string s)
@@ -95,7 +86,7 @@ public:
 
     crate(string s)
     {
-        string s_prime = supply_stacks_utils::trimmed(s);
+        string s_prime = supplies_utils::trimmed(s);
         regex r("\\[(.)\\]");
         if (!regex_match(s_prime, r)) {
             throw "Invalid crate string";
@@ -106,10 +97,5 @@ public:
     char get_contents() { return contents; };
 
     std::string to_string() { return std::string("[") + contents + "]"; }
-
-    bool operator==(const crate& other) const
-    {
-        return other.contents == this->contents;
-    }
 };
 }
