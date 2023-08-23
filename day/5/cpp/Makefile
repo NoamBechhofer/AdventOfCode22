@@ -30,5 +30,9 @@ $(TARGET): $(OBJS)
 clean:
 	rm -f $(OBJS) $(TARGET) out.txt
 
+
+test:
+	make clean && make && ./SupplyStacks ../input.txt > out.txt 2>&1
+
 valtest:
 	make clean && make && valgrind ./SupplyStacks ../input.txt > out.txt 2>&1
