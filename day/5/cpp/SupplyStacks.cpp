@@ -6,37 +6,43 @@
  */
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <stack>
 #include <string>
 
+
 #include "SupplyStacks.hpp"
 
-#define NUM_PILES 9
+constexpr int NUM_PILES = 9;
 
 using namespace std;
 
+int max_len = 155;
 void debug_print_stacks(stack<supplies::crate> stacks[NUM_PILES])
 {
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    cerr << supply_stacks_utils::repeat('~', max_len + strlen("stack x")) << "\n";
 
     stack<supplies::crate> tmp;
 
     for (int i = 0; i < NUM_PILES; i++) {
-        cerr << "Stack " << i + 1 << ": ";
         while (!stacks[i].empty()) {
-            cerr << stacks[i].top().to_string() << " ";
             tmp.push(stacks[i].top());
             stacks[i].pop();
         }
-        cerr << "\n";
+        int tmp_len = 0;
         while (!tmp.empty()) {
-            stacks[i].push(tmp.top());
+            supplies::crate top = tmp.top();
+            cerr << top.to_string();
+            tmp_len += top.to_string().length();
+            stacks[i].push(top);
             tmp.pop();
         }
+        max_len = max(max_len, tmp_len);
+        cerr << supply_stacks_utils::repeat(' ', max_len - tmp_len) << " Stack " << i + 1 << "\n";
     }
 
-    cerr << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
+    cerr << supply_stacks_utils::repeat('~', max_len + strlen("stack x")) << "\n";
 }
 
 int main(int argc, char** argv)

@@ -28,4 +28,7 @@ $(TARGET): $(OBJS)
 
 # clean rule
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJS) $(TARGET) out.txt
+
+valtest:
+	make clean && make && valgrind ./SupplyStacks ../input.txt > out.txt 2>&1
