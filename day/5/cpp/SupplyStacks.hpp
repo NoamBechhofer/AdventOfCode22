@@ -8,28 +8,6 @@
 namespace supply_stacks_utils {
 using namespace std;
 
-template <typename T>
-
-/**
- * @brief Wrap a std::deque in a stack interface. This is useful for debugging.
- */
-class my_stack {
-private:
-    deque<T> d;
-
-public:
-    my_stack() = default;
-    my_stack(std::deque<T> d)
-        : d(d)
-    {
-    }
-    void push(T t) { d.push_back(t); }
-    void pop() { d.pop_back(); }
-    T top() { return d.back(); }
-    bool empty() { return d.empty(); }
-    size_t size() { return d.size(); }
-};
-
 string left_trimmed(string s)
 {
     // try {

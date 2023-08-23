@@ -18,7 +18,7 @@ constexpr int NUM_PILES = 9;
 
 using namespace std;
 
-void debug_print_stacks(ostream& output, supply_stacks_utils::my_stack<supplies::crate> stacks[NUM_PILES])
+void debug_print_stacks(ostream& output, deque<supplies::crate> stacks[NUM_PILES])
 {
     output << supply_stacks_utils::repeat('~', 40) << "\n";
 
@@ -33,7 +33,7 @@ void debug_print_stacks(ostream& output, supply_stacks_utils::my_stack<supplies:
      * the crates off the backup stacks and put them back on the original when
      * we're done printing.
      */
-    supply_stacks_utils::my_stack<supplies::crate> backup[NUM_PILES];
+    deque<supplies::crate> backup[NUM_PILES];
 
     /*
      * Now we can print the stacks. The formatting is made to match the format
@@ -42,13 +42,13 @@ void debug_print_stacks(ostream& output, supply_stacks_utils::my_stack<supplies:
     for (int i = max_items; i > 0; i--) {
         for (int j = 0; j < NUM_PILES; j++) {
             if (stacks[j].size() >= (size_t)i) {
-                supplies::crate top = stacks[j].top();
+                supplies::crate top = stacks[j].back();
                 output << top.to_string();
                 if (j < NUM_PILES - 1) {
                     output << " ";
                 }
-                backup[j].push(top);
-                stacks[j].pop();
+                backup[j].push_back(top);
+                stacks[j].pop_back();
             } else {
                 output << supply_stacks_utils::repeat(' ', 4);
             }
@@ -66,8 +66,8 @@ void debug_print_stacks(ostream& output, supply_stacks_utils::my_stack<supplies:
     /* now restore the stacks */
     for (int i = 0; i < NUM_PILES; i++) {
         while (!backup[i].empty()) {
-            stacks[i].push(backup[i].top());
-            backup[i].pop();
+            stacks[i].push_back(backup[i].back());
+            backup[i].pop_back();
         }
     }
 
@@ -145,8 +145,7 @@ void crate_mover_9001_execute(deque<supplies::crate> stacks[NUM_PILES], string l
     int to_stack;
     tie(num_crates, from_stack, to_stack) = parse_move_command(line);
 
-    cerr << "moving " << num_crates << " crates from stack " << from_stack << " to stack " << to_stack << "\n";
-
+    // cerr << "moving " << num_crates << " crates from stack " << from_stack << " to stack " << to_stack << "\n";
     stack<supplies::crate> batch;
     for (int i = 0; i < num_crates; i++) {
         if (stacks[from_stack - 1].empty()) {
@@ -159,12 +158,6 @@ void crate_mover_9001_execute(deque<supplies::crate> stacks[NUM_PILES], string l
         stacks[to_stack - 1].push_back(batch.top());
         batch.pop();
     }
-
-    supply_stacks_utils::my_stack<supplies::crate> tmp[NUM_PILES];
-    std::transform(stacks, stacks + NUM_PILES, tmp, [](deque<supplies::crate> d) {
-        return supply_stacks_utils::my_stack<supplies::crate> { d };
-    });
-    debug_print_stacks(cerr, tmp);
 }
 
 int main(int argc, char** argv)
@@ -208,11 +201,7 @@ int main(int argc, char** argv)
         }
     }
 
-    supply_stacks_utils::my_stack<supplies::crate> tmp[NUM_PILES];
-    std::transform(stacks, stacks + NUM_PILES, tmp, [](deque<supplies::crate> d) {
-        return supply_stacks_utils::my_stack<supplies::crate> { d };
-    });
-    debug_print_stacks(cerr, tmp);
+    debug_print_stacks(cerr, stacks);
 
     deque<supplies::crate> stacks_9001[NUM_PILES];
     copy(begin(stacks), end(stacks), begin(stacks_9001));
