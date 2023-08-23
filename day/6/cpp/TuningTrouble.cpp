@@ -1,3 +1,9 @@
+/*
+ * TuningTrouble.cpp
+ * AoC 2022 Day 6
+ * 
+ * Author: Noam Bechhofer
+ */
 #include <fstream>
 #include <iostream>
 #include <deque>
