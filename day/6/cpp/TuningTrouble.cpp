@@ -6,7 +6,8 @@
 
 using namespace std;
 
-constexpr int WINDOW_SIZE = 4;
+constexpr int START_OF_PACKET_MIN_UNIQUE_CHARS = 4;
+constexpr int START_OF_MESSAGE_MIN_UNIQUE_CHARS = 14;
 
 int main(int argc, char** argv)
 {
@@ -22,6 +23,8 @@ int main(int argc, char** argv)
     }
 
     deque<char> window {};
+
+    bool packet_began = false;
     int char_num = 1;
     while (input_file.peek() != EOF) {
         char c = input_file.get();
@@ -30,12 +33,16 @@ int main(int argc, char** argv)
             window.erase(window.begin(), itr + 1);
         }
         window.push_back(c);
-        if (window.size() >= WINDOW_SIZE) {
-            cout << char_num << endl;
-            return 0;
+        if (!packet_began && window.size() >= START_OF_PACKET_MIN_UNIQUE_CHARS) {
+            cout << "packet began at char " << char_num << "\n";
+            packet_began = true;
+        } else if (packet_began && window.size() >= START_OF_MESSAGE_MIN_UNIQUE_CHARS) {
+            cout << "message began at char " << char_num << "\n";
+            break;
         }
         char_num++;
     }
 
-    return 1;
+    cout << flush;
+    return 0;
 }
